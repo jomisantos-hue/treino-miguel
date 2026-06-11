@@ -13,60 +13,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0c10;
-  --surface: #12151d;
-  --surface2: #1a1e2a;
-  --surface3: #222738;
-  --accent: #d4f000;
-  --blue: #00d4f0;
-  --red: #f04060;
-  --purple: #9060f0;
-  --text: #eceef5;
-  --muted: #5a6278;
-  --muted2: #8090a8;
-  --border: #1e2333;
-  --safe-top: env(safe-area-inset-top, 44px);
-  --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --bg:#0a0c10; --surface:#12151d; --surface2:#1a1e2a; --surface3:#222738;
+  --accent:#d4f000; --blue:#00d4f0; --red:#f04060; --purple:#9060f0;
+  --orange:#f0a040; --green:#40e090; --pink:#f060c0;
+  --text:#eceef5; --muted:#5a6278; --muted2:#8090a8; --border:#1e2333;
+  --safe-top:env(safe-area-inset-top,44px); --safe-bottom:env(safe-area-inset-bottom,20px);
 }
-
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'Barlow',sans-serif; font-weight:300; -webkit-font-smoothing:antialiased; }
+#app { height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+.screen { display:none; flex:1; flex-direction:column; overflow:hidden; }
+.screen.active { display:flex; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Barlow', sans-serif;
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-}
-
-#app { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-
-.screen { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-.screen.active { display: flex; animation: fadeIn 0.2s ease; }
-
-@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-.topbar {
-  padding: calc(var(--safe-top) + 12px) 20px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--bg); border-bottom: 1px solid var(--border); flex-shrink: 0;
-}
+.topbar { padding:calc(var(--safe-top) + 12px) 20px 12px; display:flex; align-items:center; justify-content:space-between; background:var(--bg); border-bottom:1px solid var(--border); flex-shrink:0; }
 .topbar-title { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:1px; }
 .topbar-sub { font-size:11px; color:var(--muted2); letter-spacing:1px; text-transform:uppercase; font-weight:500; }
 .back-btn { display:flex; align-items:center; gap:6px; font-size:14px; color:var(--accent); font-weight:500; cursor:pointer; padding:4px 0; }
+.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:calc(var(--safe-bottom) + 70px); }
 
-.scroll-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom: calc(var(--safe-bottom) + 70px); }
-
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(10,12,16,0.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  padding-bottom: var(--safe-bottom); z-index: 100;
-}
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(10,12,16,0.95); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(3,1fr); padding-bottom:var(--safe-bottom); z-index:100; }
 .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 0 8px; cursor:pointer; opacity:0.4; transition:opacity 0.2s; gap:4px; }
 .nav-item.active { opacity:1; }
 .nav-icon { font-size:22px; line-height:1; }
@@ -78,10 +44,16 @@ html, body {
 .hero-greeting { font-family:'Barlow Condensed',sans-serif; font-size:34px; font-weight:900; text-transform:uppercase; line-height:1; letter-spacing:-0.5px; }
 .hero-greeting span { color:var(--accent); }
 
-.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 20px; margin-bottom:24px; }
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 20px; margin-bottom:20px; }
 .stat-box { background:var(--surface); border:1px solid var(--border); padding:14px 12px; text-align:center; border-radius:2px; }
 .stat-val { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; color:var(--accent); line-height:1; }
 .stat-lbl { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted2); margin-top:4px; }
+
+/* FILTER CHIPS */
+.filter-row { display:flex; gap:8px; padding:0 20px 18px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.filter-row::-webkit-scrollbar { display:none; }
+.filter-chip { flex-shrink:0; padding:8px 14px; background:var(--surface); border:1px solid var(--border); border-radius:20px; font-size:12px; font-weight:600; letter-spacing:0.5px; color:var(--muted2); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.filter-chip.active { background:var(--text); color:var(--bg); border-color:var(--text); }
 
 .type-section { padding:0 20px; margin-bottom:24px; }
 .type-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
@@ -89,22 +61,22 @@ html, body {
 .type-name { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:800; letter-spacing:2px; text-transform:uppercase; }
 .type-count { font-size:11px; color:var(--muted); margin-left:auto; letter-spacing:1px; }
 
-.workout-card { background: var(--surface); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:10px; cursor:pointer; transition: border-color 0.15s; position:relative; }
+.workout-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:10px; cursor:pointer; transition:border-color 0.15s; position:relative; }
 .workout-card:active { opacity:0.8; }
 .workout-stripe { position:absolute; left:0; top:0; bottom:0; width:4px; }
 .workout-inner { padding:16px 16px 16px 20px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px; }
-.workout-name { font-family:'Barlow Condensed',sans-serif; font-size:21px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; line-height:1.05; }
+.workout-name { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; line-height:1.05; }
 .workout-sub { font-size:12px; color:var(--muted2); margin-top:3px; line-height:1.4; }
 .workout-meta { display:flex; gap:10px; margin-top:8px; }
 .workout-tag { font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--muted2); }
 .workout-tag strong { color:var(--text); font-weight:700; }
 .workout-arrow { font-size:24px; color:var(--muted); }
-.workout-done-badge { font-size:18px; }
+.workout-done-badge { font-size:16px; }
 
 .day-header-bar { padding:16px 20px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; position:relative; overflow:hidden; }
 .day-header-stripe { position:absolute; left:0; top:0; bottom:0; width:5px; }
 .day-num-badge { display:inline-block; color:#0a0c10; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:3px 10px; margin-bottom:6px; }
-.day-title { font-family:'Barlow Condensed',sans-serif; font-size:25px; font-weight:900; text-transform:uppercase; letter-spacing:0.5px; line-height:1.05; }
+.day-title { font-family:'Barlow Condensed',sans-serif; font-size:24px; font-weight:900; text-transform:uppercase; letter-spacing:0.5px; line-height:1.05; }
 .day-meta { font-size:12px; color:var(--muted2); margin-top:4px; }
 
 .phase-header { padding:16px 20px 10px; display:flex; align-items:center; gap:10px; }
@@ -132,7 +104,6 @@ html, body {
 .yt-search-btn { display:flex; align-items:center; justify-content:center; gap:8px; margin:0; padding:14px; width:100%; background:var(--surface3); border:1px solid var(--border); border-radius:2px; color:var(--text); font-size:13px; font-weight:600; letter-spacing:0.5px; text-decoration:none; cursor:pointer; transition:all 0.15s; }
 .yt-search-btn:active { background:var(--border); }
 .yt-icon { color:#ff3b3b; font-size:16px; }
-
 .detail-tips { padding:14px; }
 .tips-title { font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--muted2); margin-bottom:10px; }
 .tips-list { list-style:none; display:grid; gap:6px; }
@@ -188,9 +159,7 @@ html, body {
 </style>
 </head>
 <body>
-
 <div id="app">
-
   <div class="screen active" id="screen-home">
     <div class="topbar">
       <div>
@@ -218,6 +187,7 @@ html, body {
         <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total treinos</div></div>
         <div class="stat-box"><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Sequência</div></div>
       </div>
+      <div class="filter-row" id="filter-row"></div>
       <div id="workouts-container"></div>
     </div>
   </div>
@@ -260,194 +230,3198 @@ html, body {
 </div>
 
 <script>
-const TYPES = {
-  full: { name: "Corpo Inteiro", color: "#d4f000" },
-  aero: { name: "Aeróbico", color: "#00d4f0" },
-  hiit: { name: "HIIT", color: "#f04060" }
-};
-
 const PLAN = [
-  {
-    id: "full-a", type: "full", name: "Corpo Inteiro A",
-    subtitle: "Puxar dominante · Core", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Mobilidade dinâmica geral", note:"Ombros, ancas, coluna", sets:1, reps:"4 min", rest:0,
-          search:"dynamic warm up full body", tips:["Movimentos amplos e controlados","Aumenta a temperatura corporal","Inclui rotações de tronco e ancas"] }
-      ]},
-      { name: "Bloco Principal", dot: "blue", exercises: [
-        { name:"Elevações à Barra", note:"Excêntrico 3s · pega larga", sets:4, reps:"6–10", rest:75,
-          search:"pull up proper form", tips:["Desce em 3 segundos controlados","Peito ao nível da barra no topo","Sem embalo"] },
-        { name:"Agachamento com Barra", note:"60–70kg · profundidade total", sets:3, reps:"10–12", rest:75,
-          search:"barbell back squat form", tips:["Joelhos seguem os pés","Coxas paralelas ou abaixo","Core sempre activo"] },
-        { name:"TRX Row", note:"3s subida · 2s descida", sets:3, reps:"12–15", rest:60,
-          search:"trx inverted row", tips:["Corpo alinhado como prancha","Escápulas contraídas no topo","Baixa os pés para mais dificuldade"] },
-        { name:"Roda de Abdominais — Rollout", note:"Lombar neutra sempre", sets:3, reps:"8–12", rest:60,
-          search:"ab wheel rollout tutorial", tips:["Nunca arquear a lombar","Extensão até limite seguro","Contrai o core antes de iniciar"] }
-      ]},
-      { name: "Finisher", dot: "red", exercises: [
-        { name:"Corda — Salto contínuo", note:"Metabólico final", sets:3, reps:"60s", rest:30,
-          search:"jump rope basic", tips:["Aterragem suave na ponta dos pés","Pulsos a mover a corda","Cotovelos junto ao corpo"] }
-      ]}
+ {
+  "id": "full-a",
+  "type": "full",
+  "name": "Corpo Inteiro A",
+  "subtitle": "Puxar dominante · Core",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica geral",
+      "note": "Ombros, ancas, coluna",
+      "sets": 1,
+      "reps": "4 min",
+      "rest": 0,
+      "search": "dynamic warm up full body",
+      "tips": [
+       "Movimentos amplos e controlados",
+       "Aumenta a temperatura corporal",
+       "Inclui rotações de tronco e ancas"
+      ]
+     }
     ]
-  },
-  {
-    id: "full-b", type: "full", name: "Corpo Inteiro B",
-    subtitle: "Empurrar dominante · Core", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Activação escapular TRX (W-Y-T)", note:"Manguito rotador", sets:2, reps:"8 cada", rest:30,
-          search:"trx YTW shoulder", tips:["Movimento lento e controlado","Escápulas para trás e baixo","Essencial após os 50"] }
-      ]},
-      { name: "Bloco Principal", dot: "blue", exercises: [
-        { name:"Press de Peito Inclinado (30°)", note:"Barra · ~70% 1RM", sets:4, reps:"10–12", rest:75,
-          search:"incline barbell bench press", tips:["30° reduz stress no ombro","Barra ao peito superior","Não travar cotovelos no topo"] },
-        { name:"Romanian Deadlift", note:"50–60kg · excêntrico 3s", sets:3, reps:"10–12", rest:75,
-          search:"romanian deadlift form", tips:["Barra raspa as pernas","Sentes os isquiotibiais a esticar","Para quando as costas arredondam"] },
-        { name:"Press Militar Halteres (Sentado)", note:"Neutro → pronado", sets:3, reps:"12", rest:60,
-          search:"seated dumbbell shoulder press", tips:["Não elevar os ombros","Roda as palmas ao subir","Core activo"] },
-        { name:"Hollow Body Hold", note:"Core global", sets:3, reps:"30–45s", rest:45,
-          search:"hollow body hold tutorial", tips:["Lombar colada ao chão","Braços junto às orelhas","Respira controladamente"] }
-      ]},
-      { name: "Finisher", dot: "red", exercises: [
-        { name:"Burpees", note:"Composto metabólico", sets:3, reps:"10", rest:40,
-          search:"burpee proper form", tips:["Peito ao chão em baixo","Salto explosivo em cima","Mantém ritmo constante"] }
-      ]}
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Elevações à Barra",
+      "note": "Excêntrico 3s · pega larga",
+      "sets": 4,
+      "reps": "6–10",
+      "rest": 75,
+      "search": "pull up proper form",
+      "tips": [
+       "Desce em 3 segundos controlados",
+       "Peito ao nível da barra no topo",
+       "Sem embalo"
+      ]
+     },
+     {
+      "name": "Agachamento com Barra",
+      "note": "60–70kg · profundidade total",
+      "sets": 3,
+      "reps": "10–12",
+      "rest": 75,
+      "search": "barbell back squat form",
+      "tips": [
+       "Joelhos seguem os pés",
+       "Coxas paralelas ou abaixo",
+       "Core sempre activo"
+      ]
+     },
+     {
+      "name": "TRX Row",
+      "note": "3s subida · 2s descida",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "trx inverted row",
+      "tips": [
+       "Corpo alinhado como prancha",
+       "Escápulas contraídas no topo",
+       "Baixa os pés para mais dificuldade"
+      ]
+     },
+     {
+      "name": "Roda de Abdominais — Rollout",
+      "note": "Lombar neutra sempre",
+      "sets": 3,
+      "reps": "8–12",
+      "rest": 60,
+      "search": "ab wheel rollout tutorial",
+      "tips": [
+       "Nunca arquear a lombar",
+       "Extensão até limite seguro",
+       "Contrai o core antes de iniciar"
+      ]
+     }
     ]
-  },
-  {
-    id: "full-c", type: "full", name: "Corpo Inteiro C",
-    subtitle: "Unilateral · Estabilidade", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"90/90 Hip + agachamento profundo", note:"Mobilidade da anca", sets:2, reps:"60s", rest:0,
-          search:"90 90 hip mobility", tips:["Costas direitas","Respira em cada posição","Prepara as ancas para a carga"] }
-      ]},
-      { name: "Bloco Principal", dot: "blue", exercises: [
-        { name:"Lunge Búlgaro com Halteres", note:"Banco · unilateral", sets:3, reps:"12/lado", rest:60,
-          search:"bulgarian split squat", tips:["Pé traseiro no banco","Joelho não ultrapassa o pé","Inclina ligeiro à frente para glúteo"] },
-        { name:"Remada Unilateral com Halter", note:"Apoio no banco", sets:3, reps:"12/lado", rest:60,
-          search:"single arm dumbbell row", tips:["Costas paralelas ao chão","Cotovelo junto ao corpo","Escápula recolhe no topo"] },
-        { name:"TRX Push-up", note:"Instabilidade activa core", sets:3, reps:"12–15", rest:60,
-          search:"trx push up", tips:["Corpo em linha — anca não cai","Cotovelos a 45°","Peito toca nas alças"] },
-        { name:"Elevação de Gémeos Unilateral", note:"Degrau · 3s descida", sets:3, reps:"15/lado", rest:45,
-          search:"single leg calf raise", tips:["Amplitude total","3s a descer","Apoia-te na parede para equilíbrio"] }
-      ]},
-      { name: "Finisher", dot: "red", exercises: [
-        { name:"Mountain Climbers", note:"Core + cardio", sets:3, reps:"40s", rest:30,
-          search:"mountain climbers exercise", tips:["Anca estável","Ritmo rápido mas controlado","Core sempre activo"] }
-      ]}
+   },
+   {
+    "name": "Finisher",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Corda — Salto contínuo",
+      "note": "Metabólico final",
+      "sets": 3,
+      "reps": "60s",
+      "rest": 30,
+      "search": "jump rope basic",
+      "tips": [
+       "Aterragem suave na ponta dos pés",
+       "Pulsos a mover a corda",
+       "Cotovelos junto ao corpo"
+      ]
+     }
     ]
-  },
-  {
-    id: "aero-a", type: "aero", name: "Zona 2 — Spinning",
-    subtitle: "Base aeróbica · longevidade", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Spinning — ritmo crescente", note:"Sobe gradualmente até Zona 2", sets:1, reps:"5 min", rest:0,
-          search:"cycling warm up", tips:["Cadência 80–90 rpm","Aumenta resistência gradualmente","Respiração nasal"] }
-      ]},
-      { name: "Bloco Zona 2", dot: "blue", exercises: [
-        { name:"Spinning — Zona 2 contínua", note:"60–70% FCmax (~100–118 bpm)", sets:1, reps:"22 min", rest:0,
-          search:"zone 2 cardio training", tips:["Consegues falar em frases completas","FCmax estimada: 168 bpm (220−52)","Principal estímulo mitocondrial","Podes ouvir podcast — esforço moderado"] }
-      ]},
-      { name: "Retorno", dot: "purple", exercises: [
-        { name:"Spinning leve + respiração", note:"Parasimpático activo", sets:1, reps:"3 min", rest:0,
-          search:"cool down breathing", tips:["Reduz gradualmente a intensidade","Respiração diafragmática lenta","Recuperação hormonal"] }
-      ]}
+   }
+  ]
+ },
+ {
+  "id": "full-b",
+  "type": "full",
+  "name": "Corpo Inteiro B",
+  "subtitle": "Empurrar dominante · Core",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Activação escapular TRX (W-Y-T)",
+      "note": "Manguito rotador",
+      "sets": 2,
+      "reps": "8 cada",
+      "rest": 30,
+      "search": "trx YTW shoulder",
+      "tips": [
+       "Movimento lento e controlado",
+       "Escápulas para trás e baixo",
+       "Essencial após os 50"
+      ]
+     }
     ]
-  },
-  {
-    id: "aero-b", type: "aero", name: "Aeróbico Misto",
-    subtitle: "Corda + bicicleta · variedade", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Mobilidade + corda leve", note:"Aquece tornozelos e ombros", sets:1, reps:"5 min", rest:0,
-          search:"jump rope warm up", tips:["Saltos baixos e leves","Aquece as articulações","Prepara a coordenação"] }
-      ]},
-      { name: "Bloco Contínuo Misto", dot: "blue", exercises: [
-        { name:"Corda — ritmo moderado", note:"Bloco 1", sets:1, reps:"6 min", rest:60,
-          search:"jump rope cardio", tips:["Ritmo sustentável","Alterna simples e duplos","Mantém a postura erguida"] },
-        { name:"Spinning — Zona 2", note:"Bloco 2", sets:1, reps:"10 min", rest:60,
-          search:"zone 2 cycling", tips:["60–70% FCmax","Cadência estável","Conversa possível"] },
-        { name:"Corda — ritmo moderado", note:"Bloco 3", sets:1, reps:"6 min", rest:0,
-          search:"jump rope intervals", tips:["Mantém a cadência","Aterragem suave","Termina forte mas controlado"] }
-      ]}
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Press de Peito Inclinado (30°)",
+      "note": "Barra · ~70% 1RM",
+      "sets": 4,
+      "reps": "10–12",
+      "rest": 75,
+      "search": "incline barbell bench press",
+      "tips": [
+       "30° reduz stress no ombro",
+       "Barra ao peito superior",
+       "Não travar cotovelos no topo"
+      ]
+     },
+     {
+      "name": "Romanian Deadlift",
+      "note": "50–60kg · excêntrico 3s",
+      "sets": 3,
+      "reps": "10–12",
+      "rest": 75,
+      "search": "romanian deadlift form",
+      "tips": [
+       "Barra raspa as pernas",
+       "Sentes os isquiotibiais a esticar",
+       "Para quando as costas arredondam"
+      ]
+     },
+     {
+      "name": "Press Militar Halteres (Sentado)",
+      "note": "Neutro → pronado",
+      "sets": 3,
+      "reps": "12",
+      "rest": 60,
+      "search": "seated dumbbell shoulder press",
+      "tips": [
+       "Não elevar os ombros",
+       "Roda as palmas ao subir",
+       "Core activo"
+      ]
+     },
+     {
+      "name": "Hollow Body Hold",
+      "note": "Core global",
+      "sets": 3,
+      "reps": "30–45s",
+      "rest": 45,
+      "search": "hollow body hold tutorial",
+      "tips": [
+       "Lombar colada ao chão",
+       "Braços junto às orelhas",
+       "Respira controladamente"
+      ]
+     }
     ]
-  },
-  {
-    id: "hiit-a", type: "hiit", name: "HIIT Spinning 30/90",
-    subtitle: "VO₂max · pico de GH", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Spinning — Zona 2", note:"55–65% FCmax", sets:1, reps:"8 min", rest:0,
-          search:"hiit warm up cycling", tips:["Conversa possível","Cadência 80–90 rpm","Prepara o sistema cardiovascular"] }
-      ]},
-      { name: "Bloco HIIT", dot: "red", exercises: [
-        { name:"Sprints 30/90", note:"8 rondas · 30s máximo / 90s leve", sets:8, reps:"30s sprint", rest:90,
-          search:"hiit cycling sprints", tips:["90–95% FCmax nos sprints","Resistência alta no sprint","Nunca pares nos 90s — pedala leve","Pico de GH máximo com este protocolo"] }
-      ]},
-      { name: "Retorno", dot: "purple", exercises: [
-        { name:"Spinning muito leve", note:"Recuperação", sets:1, reps:"4 min", rest:0,
-          search:"cool down cycling", tips:["Reduz gradualmente","Respiração controlada","Baixa a frequência cardíaca"] }
-      ]}
+   },
+   {
+    "name": "Finisher",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpees",
+      "note": "Composto metabólico",
+      "sets": 3,
+      "reps": "10",
+      "rest": 40,
+      "search": "burpee proper form",
+      "tips": [
+       "Peito ao chão em baixo",
+       "Salto explosivo em cima",
+       "Mantém ritmo constante"
+      ]
+     }
     ]
-  },
-  {
-    id: "hiit-b", type: "hiit", name: "HIIT Corpo (Tabata)",
-    subtitle: "Peso corporal · metabólico", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Mobilidade dinâmica", note:"Corpo inteiro", sets:1, reps:"5 min", rest:0,
-          search:"dynamic warm up", tips:["Aquece todas as articulações","Eleva a frequência cardíaca","Activa o core"] }
-      ]},
-      { name: "Tabata 1 (20/10 × 8)", dot: "red", exercises: [
-        { name:"Burpees", note:"20s esforço / 10s pausa × 8", sets:8, reps:"20s", rest:10,
-          search:"burpee tabata", tips:["Máxima intensidade nos 20s","Peito ao chão","Salto explosivo"] }
-      ]},
-      { name: "Tabata 2 (20/10 × 8)", dot: "red", exercises: [
-        { name:"TRX Squat Jump", note:"20s esforço / 10s pausa × 8", sets:8, reps:"20s", rest:10,
-          search:"squat jump exercise", tips:["Explosivo na subida","Aterragem suave","Usa o TRX para profundidade"] }
-      ]},
-      { name: "Tabata 3 (20/10 × 8)", dot: "red", exercises: [
-        { name:"Mountain Climbers", note:"20s esforço / 10s pausa × 8", sets:8, reps:"20s", rest:10,
-          search:"mountain climbers", tips:["Ritmo rápido","Anca estável","Core activo"] }
-      ]}
+   }
+  ]
+ },
+ {
+  "id": "full-c",
+  "type": "full",
+  "name": "Corpo Inteiro C",
+  "subtitle": "Unilateral · Estabilidade",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "90/90 Hip + agachamento profundo",
+      "note": "Mobilidade da anca",
+      "sets": 2,
+      "reps": "60s",
+      "rest": 0,
+      "search": "90 90 hip mobility",
+      "tips": [
+       "Costas direitas",
+       "Respira em cada posição",
+       "Prepara as ancas para a carga"
+      ]
+     }
     ]
-  },
-  {
-    id: "hiit-c", type: "hiit", name: "HIIT Circuito Força",
-    subtitle: "Força-resistência intensa", duration: 30,
-    phases: [
-      { name: "Aquecimento", dot: "", exercises: [
-        { name:"Activação geral + corda", note:"Prepara o corpo", sets:1, reps:"5 min", rest:0,
-          search:"full body activation", tips:["Aquece progressivamente","Foca ombros e ancas","Eleva a temperatura"] }
-      ]},
-      { name: "Circuito (4 rondas · 40/20)", dot: "red", exercises: [
-        { name:"TRX Row", note:"40s trabalho / 20s transição", sets:4, reps:"40s", rest:20,
-          search:"trx row", tips:["Mantém cadência","Escápulas activas","Corpo em linha"] },
-        { name:"Goblet Squat com Halter", note:"40s trabalho / 20s transição", sets:4, reps:"40s", rest:20,
-          search:"goblet squat", tips:["Halter junto ao peito","Profundidade total","Costas direitas"] },
-        { name:"Press Halteres em pé", note:"40s trabalho / 20s transição", sets:4, reps:"40s", rest:20,
-          search:"standing dumbbell press", tips:["Core activo","Não arquear a lombar","Amplitude completa"] },
-        { name:"Corda ou Mountain Climbers", note:"40s trabalho / 60s descanso fim de ronda", sets:4, reps:"40s", rest:60,
-          search:"jump rope hiit", tips:["Máxima intensidade","Descansa 60s no fim da ronda","Hidrata entre rondas"] }
-      ]}
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Lunge Búlgaro com Halteres",
+      "note": "Banco · unilateral",
+      "sets": 3,
+      "reps": "12/lado",
+      "rest": 60,
+      "search": "bulgarian split squat",
+      "tips": [
+       "Pé traseiro no banco",
+       "Joelho não ultrapassa o pé",
+       "Inclina ligeiro à frente para glúteo"
+      ]
+     },
+     {
+      "name": "Remada Unilateral com Halter",
+      "note": "Apoio no banco",
+      "sets": 3,
+      "reps": "12/lado",
+      "rest": 60,
+      "search": "single arm dumbbell row",
+      "tips": [
+       "Costas paralelas ao chão",
+       "Cotovelo junto ao corpo",
+       "Escápula recolhe no topo"
+      ]
+     },
+     {
+      "name": "TRX Push-up",
+      "note": "Instabilidade activa core",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "trx push up",
+      "tips": [
+       "Corpo em linha — anca não cai",
+       "Cotovelos a 45°",
+       "Peito toca nas alças"
+      ]
+     },
+     {
+      "name": "Elevação de Gémeos Unilateral",
+      "note": "Degrau · 3s descida",
+      "sets": 3,
+      "reps": "15/lado",
+      "rest": 45,
+      "search": "single leg calf raise",
+      "tips": [
+       "Amplitude total",
+       "3s a descer",
+       "Apoia-te na parede para equilíbrio"
+      ]
+     }
     ]
-  }
+   },
+   {
+    "name": "Finisher",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Mountain Climbers",
+      "note": "Core + cardio",
+      "sets": 3,
+      "reps": "40s",
+      "rest": 30,
+      "search": "mountain climbers exercise",
+      "tips": [
+       "Anca estável",
+       "Ritmo rápido mas controlado",
+       "Core sempre activo"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "upper-1",
+  "type": "upper",
+  "name": "Upper — Puxar",
+  "subtitle": "Costas · Bíceps",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Band pull-aparts + rotações",
+      "note": "Activação posterior",
+      "sets": 2,
+      "reps": "15",
+      "rest": 30,
+      "search": "band pull apart",
+      "tips": [
+       "Escápulas para trás",
+       "Cotovelos ligeiramente fletidos",
+       "Movimento controlado"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Elevações à Barra (Pronadas)",
+      "note": "Excêntrico 3s",
+      "sets": 4,
+      "reps": "6–10",
+      "rest": 75,
+      "search": "pull up proper form",
+      "tips": [
+       "Pega mais larga que ombros",
+       "Peito à barra no topo",
+       "Desce devagar"
+      ]
+     },
+     {
+      "name": "TRX Row",
+      "note": "Ângulo progressivo",
+      "sets": 4,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "trx inverted row",
+      "tips": [
+       "Corpo como prancha",
+       "Escápulas contraídas",
+       "Baixa pés p/ dificuldade"
+      ]
+     },
+     {
+      "name": "Curl Bíceps Halteres",
+      "note": "Alternado · amplitude total",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "dumbbell biceps curl",
+      "tips": [
+       "Supinação no topo",
+       "Cotovelo fixo",
+       "Sem embalo"
+      ]
+     },
+     {
+      "name": "TRX Face Pull",
+      "note": "Saúde dos ombros",
+      "sets": 3,
+      "reps": "15",
+      "rest": 45,
+      "search": "trx face pull",
+      "tips": [
+       "Puxar ao nível do rosto",
+       "Cotovelos altos",
+       "Rotação externa final"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "upper-2",
+  "type": "upper",
+  "name": "Upper — Empurrar",
+  "subtitle": "Peito · Ombros · Tríceps",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Activação escapular TRX (W-Y-T)",
+      "note": "Manguito rotador",
+      "sets": 2,
+      "reps": "8 cada",
+      "rest": 30,
+      "search": "trx YTW shoulder",
+      "tips": [
+       "Lento e controlado",
+       "Escápulas baixas",
+       "Sem dor"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Press de Peito Inclinado (30°)",
+      "note": "Barra",
+      "sets": 4,
+      "reps": "10–12",
+      "rest": 75,
+      "search": "incline barbell bench press",
+      "tips": [
+       "30° protege ombro",
+       "Barra ao peito superior",
+       "Cotovelos não travam"
+      ]
+     },
+     {
+      "name": "Press Militar Halteres",
+      "note": "Sentado",
+      "sets": 3,
+      "reps": "12",
+      "rest": 60,
+      "search": "seated dumbbell shoulder press",
+      "tips": [
+       "Ombros baixos",
+       "Roda palmas ao subir",
+       "Core activo"
+      ]
+     },
+     {
+      "name": "TRX Push-up",
+      "note": "Instabilidade",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "trx push up",
+      "tips": [
+       "Corpo em linha",
+       "Cotovelos 45°",
+       "Peito às alças"
+      ]
+     },
+     {
+      "name": "Extensão Tríceps Overhead",
+      "note": "Halter unilateral",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 45,
+      "search": "overhead triceps extension",
+      "tips": [
+       "Cotovelo ao tecto",
+       "Só antebraço move",
+       "Core activo"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "upper-3",
+  "type": "upper",
+  "name": "Upper — Misto Volume",
+  "subtitle": "Puxar + Empurrar equilibrado",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade ombros + band",
+      "note": "Prepara articulações",
+      "sets": 2,
+      "reps": "12",
+      "rest": 30,
+      "search": "shoulder mobility warm up",
+      "tips": [
+       "Amplitude total",
+       "Sem dor",
+       "Aquece progressivamente"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Superséries",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Elevações + Press Inclinado",
+      "note": "Supersérie A — sem descanso entre",
+      "sets": 3,
+      "reps": "8 + 10",
+      "rest": 75,
+      "search": "pull up bench press superset",
+      "tips": [
+       "Puxar depois empurrar",
+       "Descanso só no fim do par",
+       "Mantém a técnica"
+      ]
+     },
+     {
+      "name": "TRX Row + Press Militar",
+      "note": "Supersérie B",
+      "sets": 3,
+      "reps": "12 + 12",
+      "rest": 75,
+      "search": "trx row shoulder press",
+      "tips": [
+       "Sem descanso entre os dois",
+       "Controla a cadência",
+       "Core firme"
+      ]
+     },
+     {
+      "name": "Curl + Extensão Tríceps",
+      "note": "Supersérie C — braços",
+      "sets": 3,
+      "reps": "12 + 12",
+      "rest": 60,
+      "search": "biceps triceps superset",
+      "tips": [
+       "Bíceps depois tríceps",
+       "Amplitude completa",
+       "Sem embalo"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "upper-4",
+  "type": "upper",
+  "name": "Upper — Resistência",
+  "subtitle": "Séries longas · TUT alto",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Activação geral superior",
+      "note": "Ombros e costas",
+      "sets": 2,
+      "reps": "15",
+      "rest": 30,
+      "search": "upper body activation",
+      "tips": [
+       "Movimento controlado",
+       "Aquece manguito",
+       "Prepara para volume"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Resistência",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "TRX Row (tempo lento)",
+      "note": "3s subida · 3s descida",
+      "sets": 4,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "trx row tempo",
+      "tips": [
+       "Cadência lenta",
+       "Tensão constante",
+       "Escápulas activas"
+      ]
+     },
+     {
+      "name": "Flexões (variação à escolha)",
+      "note": "Standard ou TRX",
+      "sets": 4,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "push up variations",
+      "tips": [
+       "Corpo em linha",
+       "Amplitude total",
+       "Ritmo constante"
+      ]
+     },
+     {
+      "name": "Curl Halteres alto reps",
+      "note": "Resistência muscular",
+      "sets": 3,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "dumbbell curl high reps",
+      "tips": [
+       "Peso moderado",
+       "Sem descanso longo",
+       "Foco na congestão"
+      ]
+     },
+     {
+      "name": "Elevações laterais Halteres",
+      "note": "Deltoide médio",
+      "sets": 3,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "lateral raise dumbbell",
+      "tips": [
+       "Cotovelos ligeiramente fletidos",
+       "Não usar embalo",
+       "Controla a descida"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "upper-5",
+  "type": "upper",
+  "name": "Upper — Ombros & Postura",
+  "subtitle": "Deltoides · saúde escapular",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Rotações + band pull-apart",
+      "note": "Manguito e postura",
+      "sets": 2,
+      "reps": "15",
+      "rest": 30,
+      "search": "rotator cuff warm up",
+      "tips": [
+       "Movimento suave",
+       "Foco na postura",
+       "Escápulas baixas"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Press Militar Halteres",
+      "note": "Sentado · controlado",
+      "sets": 4,
+      "reps": "10–12",
+      "rest": 60,
+      "search": "seated dumbbell shoulder press",
+      "tips": [
+       "Ombros baixos",
+       "Amplitude total",
+       "Core firme"
+      ]
+     },
+     {
+      "name": "Elevações Laterais",
+      "note": "Deltoide médio",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 45,
+      "search": "lateral raise dumbbell",
+      "tips": [
+       "Não passar a horizontal",
+       "Controla descida",
+       "Sem embalo"
+      ]
+     },
+     {
+      "name": "TRX Face Pull",
+      "note": "Deltoide posterior + postura",
+      "sets": 4,
+      "reps": "15",
+      "rest": 45,
+      "search": "trx face pull",
+      "tips": [
+       "Cotovelos altos",
+       "Rotação externa",
+       "Aperta no fim"
+      ]
+     },
+     {
+      "name": "TRX Y-Raise",
+      "note": "Trapézio inferior",
+      "sets": 3,
+      "reps": "12",
+      "rest": 45,
+      "search": "trx y raise",
+      "tips": [
+       "Braços em Y",
+       "Lento e controlado",
+       "Crucial para postura"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "lower-1",
+  "type": "lower",
+  "name": "Lower — Agachamento",
+  "subtitle": "Quadríceps dominante",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade tornozelo + anca",
+      "note": "Prepara agachamento",
+      "sets": 2,
+      "reps": "60s",
+      "rest": 0,
+      "search": "squat mobility warm up",
+      "tips": [
+       "Agachamento profundo s/ peso",
+       "Mobiliza tornozelos",
+       "Activa glúteos"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Agachamento com Barra",
+      "note": "60–70kg · cadência 2-1-2",
+      "sets": 4,
+      "reps": "10–12",
+      "rest": 90,
+      "search": "barbell back squat form",
+      "tips": [
+       "Joelhos seguem pés",
+       "Coxas paralelas ou abaixo",
+       "Respira: inspira desce, expira sobe"
+      ]
+     },
+     {
+      "name": "Lunge Búlgaro Halteres",
+      "note": "Unilateral",
+      "sets": 3,
+      "reps": "12/lado",
+      "rest": 60,
+      "search": "bulgarian split squat",
+      "tips": [
+       "Pé traseiro no banco",
+       "Desce vertical",
+       "Glúteo activo"
+      ]
+     },
+     {
+      "name": "Extensão de Perna Isométrica",
+      "note": "Banco · 5s no topo",
+      "sets": 3,
+      "reps": "8",
+      "rest": 60,
+      "search": "leg extension",
+      "tips": [
+       "Contrai 5s no topo",
+       "Saúde patelar",
+       "Sem dor no tendão"
+      ]
+     },
+     {
+      "name": "Elevação Gémeos",
+      "note": "Degrau · 3s descida",
+      "sets": 3,
+      "reps": "15/lado",
+      "rest": 45,
+      "search": "single leg calf raise",
+      "tips": [
+       "Amplitude total",
+       "Descida lenta",
+       "Tendão de Aquiles"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "lower-2",
+  "type": "lower",
+  "name": "Lower — Cadeia Posterior",
+  "subtitle": "Isquios · Glúteos",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação glúteos + isquios",
+      "note": "Ponte e mobilidade",
+      "sets": 2,
+      "reps": "15",
+      "rest": 0,
+      "search": "glute activation",
+      "tips": [
+       "Ponte de glúteo",
+       "Aperta no topo",
+       "Activa cadeia posterior"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Romanian Deadlift",
+      "note": "50–60kg · excêntrico 3s",
+      "sets": 4,
+      "reps": "10–12",
+      "rest": 90,
+      "search": "romanian deadlift form",
+      "tips": [
+       "Barra raspa pernas",
+       "Isquios a esticar",
+       "Empurra anca à frente no topo"
+      ]
+     },
+     {
+      "name": "Ponte de Glúteo com Barra",
+      "note": "Hip thrust",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "search": "barbell hip thrust",
+      "tips": [
+       "Aperta glúteo no topo",
+       "Queixo recolhido",
+       "Pausa de 1s em cima"
+      ]
+     },
+     {
+      "name": "Good Morning com Barra",
+      "note": "Carga leve · técnica",
+      "sets": 3,
+      "reps": "12",
+      "rest": 60,
+      "search": "good morning exercise",
+      "tips": [
+       "Costas neutras",
+       "Joelhos ligeiramente fletidos",
+       "Sentir isquios"
+      ]
+     },
+     {
+      "name": "Flexão de Perna Nórdica (assistida)",
+      "note": "Excêntrico isquios",
+      "sets": 3,
+      "reps": "6–8",
+      "rest": 60,
+      "search": "nordic hamstring curl",
+      "tips": [
+       "Desce o mais lento possível",
+       "Usa mãos para assistir",
+       "Excelente prevenção lesão"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "lower-3",
+  "type": "lower",
+  "name": "Lower — Unilateral",
+  "subtitle": "Equilíbrio · simetria",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade anca 90/90",
+      "note": "Prepara unilateral",
+      "sets": 2,
+      "reps": "60s",
+      "rest": 0,
+      "search": "90 90 hip mobility",
+      "tips": [
+       "Costas direitas",
+       "Respira fundo",
+       "Mobiliza rotação"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Lunge Búlgaro Halteres",
+      "note": "Unilateral · profundo",
+      "sets": 4,
+      "reps": "12/lado",
+      "rest": 60,
+      "search": "bulgarian split squat",
+      "tips": [
+       "Pé traseiro elevado",
+       "Joelho alinhado",
+       "Glúteo activo"
+      ]
+     },
+     {
+      "name": "Step-up com Halteres",
+      "note": "Banco alto",
+      "sets": 3,
+      "reps": "12/lado",
+      "rest": 60,
+      "search": "dumbbell step up",
+      "tips": [
+       "Empurra com o calcanhar",
+       "Controla a descida",
+       "Sem embalo"
+      ]
+     },
+     {
+      "name": "Agachamento Pistol (assistido TRX)",
+      "note": "Unilateral avançado",
+      "sets": 3,
+      "reps": "6–8/lado",
+      "rest": 60,
+      "search": "pistol squat trx",
+      "tips": [
+       "Desce controlado",
+       "TRX só de apoio",
+       "Progressão de força"
+      ]
+     },
+     {
+      "name": "Elevação Gémeos Unilateral",
+      "note": "Degrau",
+      "sets": 3,
+      "reps": "15/lado",
+      "rest": 45,
+      "search": "single leg calf raise",
+      "tips": [
+       "Amplitude máxima",
+       "3s descida",
+       "Equilíbrio na parede"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "lower-4",
+  "type": "lower",
+  "name": "Lower — Força Máxima",
+  "subtitle": "Cargas altas · baixas reps",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Séries de aproximação",
+      "note": "Aquece com a barra",
+      "sets": 3,
+      "reps": "5",
+      "rest": 60,
+      "search": "squat warm up sets",
+      "tips": [
+       "Aumenta carga gradual",
+       "Técnica perfeita",
+       "Prepara sistema nervoso"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Força",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Agachamento com Barra",
+      "note": "Carga alta · 80–85%",
+      "sets": 5,
+      "reps": "5",
+      "rest": 120,
+      "search": "barbell squat heavy",
+      "tips": [
+       "Técnica impecável",
+       "Profundidade consistente",
+       "Descanso completo entre séries"
+      ]
+     },
+     {
+      "name": "Romanian Deadlift Pesado",
+      "note": "Carga progressiva",
+      "sets": 4,
+      "reps": "6–8",
+      "rest": 120,
+      "search": "heavy romanian deadlift",
+      "tips": [
+       "Costas neutras sempre",
+       "Controla o excêntrico",
+       "Não comprometer técnica"
+      ]
+     },
+     {
+      "name": "Ponte de Glúteo Pesada",
+      "note": "Hip thrust carregado",
+      "sets": 3,
+      "reps": "8",
+      "rest": 90,
+      "search": "heavy hip thrust",
+      "tips": [
+       "Aperta no topo 2s",
+       "Carga máxima segura",
+       "Anca em extensão total"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "lower-5",
+  "type": "lower",
+  "name": "Lower — Resistência",
+  "subtitle": "Séries longas · metabólico",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação + agachamento livre",
+      "note": "Prepara volume",
+      "sets": 2,
+      "reps": "20",
+      "rest": 0,
+      "search": "bodyweight squat warm up",
+      "tips": [
+       "Sem peso",
+       "Ritmo constante",
+       "Aquece articulações"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Resistência",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Goblet Squat",
+      "note": "Halter · alto volume",
+      "sets": 4,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "goblet squat",
+      "tips": [
+       "Halter ao peito",
+       "Profundidade total",
+       "Ritmo constante"
+      ]
+     },
+     {
+      "name": "Lunges Caminhada Halteres",
+      "note": "Contínuo",
+      "sets": 3,
+      "reps": "20 passos",
+      "rest": 45,
+      "search": "walking lunges dumbbell",
+      "tips": [
+       "Passo controlado",
+       "Joelho alinhado",
+       "Tronco erguido"
+      ]
+     },
+     {
+      "name": "Romanian Deadlift Halteres",
+      "note": "Volume moderado",
+      "sets": 3,
+      "reps": "15",
+      "rest": 45,
+      "search": "dumbbell romanian deadlift",
+      "tips": [
+       "Isquios a esticar",
+       "Costas neutras",
+       "Controla descida"
+      ]
+     },
+     {
+      "name": "Elevação Gémeos Alto Reps",
+      "note": "Resistência panturrilha",
+      "sets": 4,
+      "reps": "20–25",
+      "rest": 30,
+      "search": "calf raise high reps",
+      "tips": [
+       "Amplitude total",
+       "Ritmo constante",
+       "Queima muscular"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "core-1",
+  "type": "core",
+  "name": "Core — Anti-Extensão",
+  "subtitle": "Rollouts · pranchas",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação core + respiração",
+      "note": "Conexão mente-músculo",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "core activation breathing",
+      "tips": [
+       "Respiração diafragmática",
+       "Activa transverso",
+       "Bracing abdominal"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Roda de Abdominais — Rollout",
+      "note": "Anti-extensão",
+      "sets": 4,
+      "reps": "8–12",
+      "rest": 60,
+      "search": "ab wheel rollout tutorial",
+      "tips": [
+       "Lombar neutra",
+       "Extensão controlada",
+       "Não arquear"
+      ]
+     },
+     {
+      "name": "Prancha com extensão de braço",
+      "note": "Anti-extensão dinâmica",
+      "sets": 3,
+      "reps": "8/lado",
+      "rest": 45,
+      "search": "plank shoulder reach",
+      "tips": [
+       "Anca estável",
+       "Movimento lento",
+       "Core firme"
+      ]
+     },
+     {
+      "name": "Dead Bug",
+      "note": "Coordenação anti-extensão",
+      "sets": 3,
+      "reps": "10/lado",
+      "rest": 45,
+      "search": "dead bug exercise",
+      "tips": [
+       "Lombar colada ao chão",
+       "Movimento contralateral",
+       "Controla a respiração"
+      ]
+     },
+     {
+      "name": "Hollow Body Hold",
+      "note": "Isometria global",
+      "sets": 3,
+      "reps": "30–45s",
+      "rest": 45,
+      "search": "hollow body hold tutorial",
+      "tips": [
+       "Lombar no chão",
+       "Braços nas orelhas",
+       "Pernas a 45°"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "core-2",
+  "type": "core",
+  "name": "Core — Anti-Rotação",
+  "subtitle": "Estabilidade rotacional",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade torácica",
+      "note": "Prepara rotação",
+      "sets": 2,
+      "reps": "10/lado",
+      "rest": 0,
+      "search": "thoracic mobility",
+      "tips": [
+       "Roda da coluna torácica",
+       "Anca estável",
+       "Amplitude controlada"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Pallof Press (TRX/elástico)",
+      "note": "Anti-rotação clássico",
+      "sets": 4,
+      "reps": "12/lado",
+      "rest": 45,
+      "search": "pallof press",
+      "tips": [
+       "Resiste à rotação",
+       "Braços estendem à frente",
+       "Core firme"
+      ]
+     },
+     {
+      "name": "Rollout Lateral (roda)",
+      "note": "Anti-rotação dinâmica",
+      "sets": 3,
+      "reps": "8/lado",
+      "rest": 60,
+      "search": "ab wheel lateral",
+      "tips": [
+       "Diagonal para cada lado",
+       "Core contraído",
+       "Sem rodar a anca"
+      ]
+     },
+     {
+      "name": "Prancha Lateral",
+      "note": "Oblíquos isometria",
+      "sets": 3,
+      "reps": "30–45s/lado",
+      "rest": 45,
+      "search": "side plank",
+      "tips": [
+       "Corpo em linha",
+       "Anca elevada",
+       "Não deixar cair"
+      ]
+     },
+     {
+      "name": "Bird Dog",
+      "note": "Estabilidade contralateral",
+      "sets": 3,
+      "reps": "10/lado",
+      "rest": 45,
+      "search": "bird dog exercise",
+      "tips": [
+       "Braço e perna opostos",
+       "Anca nivelada",
+       "Movimento lento"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "core-3",
+  "type": "core",
+  "name": "Core — Flexão",
+  "subtitle": "Reto abdominal · oblíquos",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação abdominal",
+      "note": "Prepara o core",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "core warm up",
+      "tips": [
+       "Crunches leves",
+       "Respiração controlada",
+       "Activa o reto abdominal"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Elevação de Pernas Suspenso (barra)",
+      "note": "Reto abdominal inferior",
+      "sets": 4,
+      "reps": "10–15",
+      "rest": 60,
+      "search": "hanging leg raise",
+      "tips": [
+       "Sem balanço",
+       "Eleva até 90° ou mais",
+       "Controla a descida"
+      ]
+     },
+     {
+      "name": "Crunch com Peso",
+      "note": "Reto abdominal superior",
+      "sets": 3,
+      "reps": "15–20",
+      "rest": 45,
+      "search": "weighted crunch",
+      "tips": [
+       "Amplitude curta controlada",
+       "Disco ao peito",
+       "Expira a subir"
+      ]
+     },
+     {
+      "name": "Russian Twist com Peso",
+      "note": "Oblíquos",
+      "sets": 3,
+      "reps": "20/lado",
+      "rest": 45,
+      "search": "russian twist",
+      "tips": [
+       "Pés elevados",
+       "Roda do tronco",
+       "Controla o movimento"
+      ]
+     },
+     {
+      "name": "Bicycle Crunch",
+      "note": "Oblíquos dinâmico",
+      "sets": 3,
+      "reps": "20/lado",
+      "rest": 30,
+      "search": "bicycle crunch",
+      "tips": [
+       "Cotovelo ao joelho oposto",
+       "Ritmo controlado",
+       "Não puxar o pescoço"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "core-4",
+  "type": "core",
+  "name": "Core — Isometria",
+  "subtitle": "Resistência · estabilidade",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação + bracing",
+      "note": "Prepara isometria",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "core bracing",
+      "tips": [
+       "Aprende a fazer bracing",
+       "Respiração com tensão",
+       "Activa todo o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Principal",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Prancha Frontal",
+      "note": "Isometria base",
+      "sets": 4,
+      "reps": "45–60s",
+      "rest": 45,
+      "search": "front plank",
+      "tips": [
+       "Corpo em linha",
+       "Anca não cai",
+       "Respira continuamente"
+      ]
+     },
+     {
+      "name": "Prancha Lateral",
+      "note": "Oblíquos",
+      "sets": 3,
+      "reps": "40s/lado",
+      "rest": 45,
+      "search": "side plank",
+      "tips": [
+       "Corpo em linha",
+       "Anca elevada",
+       "Estável"
+      ]
+     },
+     {
+      "name": "Hollow Body Hold",
+      "note": "Isometria global",
+      "sets": 3,
+      "reps": "40s",
+      "rest": 45,
+      "search": "hollow body hold tutorial",
+      "tips": [
+       "Lombar no chão",
+       "Braços e pernas estendidos",
+       "Mantém tensão"
+      ]
+     },
+     {
+      "name": "TRX Plank",
+      "note": "Instabilidade",
+      "sets": 3,
+      "reps": "40s",
+      "rest": 45,
+      "search": "trx plank",
+      "tips": [
+       "Alças ao chão",
+       "Anca estável",
+       "Core firme"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "core-5",
+  "type": "core",
+  "name": "Core — Completo",
+  "subtitle": "Circuito 360° abdominal",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Ativação geral core",
+      "note": "Prepara o circuito",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "core activation",
+      "tips": [
+       "Movimento dinâmico",
+       "Respiração",
+       "Activa todas as zonas"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Circuito (3 rondas)",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Rollout (roda)",
+      "note": "Anti-extensão",
+      "sets": 3,
+      "reps": "10",
+      "rest": 20,
+      "search": "ab wheel rollout tutorial",
+      "tips": [
+       "Lombar neutra",
+       "Controlado",
+       "Sem arquear"
+      ]
+     },
+     {
+      "name": "Prancha Lateral",
+      "note": "Oblíquos",
+      "sets": 3,
+      "reps": "30s/lado",
+      "rest": 20,
+      "search": "side plank",
+      "tips": [
+       "Corpo em linha",
+       "Estável",
+       "Anca elevada"
+      ]
+     },
+     {
+      "name": "Elevação de Pernas",
+      "note": "Abdominal inferior",
+      "sets": 3,
+      "reps": "12",
+      "rest": 20,
+      "search": "hanging leg raise",
+      "tips": [
+       "Sem balanço",
+       "Controla descida",
+       "Amplitude total"
+      ]
+     },
+     {
+      "name": "Dead Bug",
+      "note": "Coordenação",
+      "sets": 3,
+      "reps": "10/lado",
+      "rest": 60,
+      "search": "dead bug exercise",
+      "tips": [
+       "Lombar colada",
+       "Contralateral",
+       "Respira"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "stretch-1",
+  "type": "stretch",
+  "name": "Along. — Corpo Inteiro",
+  "subtitle": "Recuperação geral",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Sequência",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Alongamento gato-vaca",
+      "note": "Mobilidade coluna",
+      "sets": 1,
+      "reps": "60s",
+      "rest": 0,
+      "search": "cat cow stretch",
+      "tips": [
+       "Movimento fluido",
+       "Sincroniza com respiração",
+       "Mobiliza toda a coluna"
+      ]
+     },
+     {
+      "name": "Cão olhando para baixo",
+      "note": "Cadeia posterior",
+      "sets": 1,
+      "reps": "60s",
+      "rest": 0,
+      "search": "downward dog stretch",
+      "tips": [
+       "Calcanhares ao chão",
+       "Costas alongadas",
+       "Respira fundo"
+      ]
+     },
+     {
+      "name": "Alongamento isquiotibiais",
+      "note": "Sentado",
+      "sets": 1,
+      "reps": "60s/lado",
+      "rest": 0,
+      "search": "hamstring stretch",
+      "tips": [
+       "Costas direitas",
+       "Inclina da anca",
+       "Sem forçar"
+      ]
+     },
+     {
+      "name": "Alongamento quadríceps em pé",
+      "note": "Anterior coxa",
+      "sets": 1,
+      "reps": "45s/lado",
+      "rest": 0,
+      "search": "quad stretch",
+      "tips": [
+       "Joelhos juntos",
+       "Anca à frente",
+       "Equilíbrio na parede"
+      ]
+     },
+     {
+      "name": "Alongamento peito (porta/TRX)",
+      "note": "Abre o peito",
+      "sets": 1,
+      "reps": "45s",
+      "rest": 0,
+      "search": "chest stretch doorway",
+      "tips": [
+       "Antebraço apoiado",
+       "Roda o tronco",
+       "Sente o peito a abrir"
+      ]
+     },
+     {
+      "name": "Postura da criança",
+      "note": "Relaxamento final",
+      "sets": 1,
+      "reps": "90s",
+      "rest": 0,
+      "search": "childs pose",
+      "tips": [
+       "Anca aos calcanhares",
+       "Braços estendidos",
+       "Respiração lenta"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "stretch-2",
+  "type": "stretch",
+  "name": "Along. — Ancas & Pernas",
+  "subtitle": "Pós-treino inferior",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Sequência",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Pombo (Pigeon)",
+      "note": "Anca e glúteo",
+      "sets": 1,
+      "reps": "90s/lado",
+      "rest": 0,
+      "search": "pigeon pose stretch",
+      "tips": [
+       "Perna de trás estendida",
+       "Inclina à frente",
+       "Relaxa progressivamente"
+      ]
+     },
+     {
+      "name": "Alongamento 90/90",
+      "note": "Rotação da anca",
+      "sets": 1,
+      "reps": "60s/lado",
+      "rest": 0,
+      "search": "90 90 hip stretch",
+      "tips": [
+       "Costas direitas",
+       "Inclina à frente",
+       "Respira"
+      ]
+     },
+     {
+      "name": "Alongamento isquiotibiais deitado",
+      "note": "Com toalha/banda",
+      "sets": 1,
+      "reps": "60s/lado",
+      "rest": 0,
+      "search": "lying hamstring stretch",
+      "tips": [
+       "Perna estendida",
+       "Puxa suavemente",
+       "Lombar no chão"
+      ]
+     },
+     {
+      "name": "Borboleta (adutores)",
+      "note": "Interior das coxas",
+      "sets": 1,
+      "reps": "60s",
+      "rest": 0,
+      "search": "butterfly stretch",
+      "tips": [
+       "Plantas dos pés juntas",
+       "Cotovelos nos joelhos",
+       "Inclina à frente"
+      ]
+     },
+     {
+      "name": "Flexor da anca (lunge baixo)",
+      "note": "Psoas",
+      "sets": 1,
+      "reps": "60s/lado",
+      "rest": 0,
+      "search": "hip flexor stretch",
+      "tips": [
+       "Anca à frente",
+       "Tronco erguido",
+       "Sente o flexor a esticar"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "stretch-3",
+  "type": "stretch",
+  "name": "Along. — Ombros & Costas",
+  "subtitle": "Pós-treino superior",
+  "duration": 20,
+  "phases": [
+   {
+    "name": "Sequência",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Alongamento peito na parede",
+      "note": "Peitoral",
+      "sets": 1,
+      "reps": "45s/lado",
+      "rest": 0,
+      "search": "chest stretch wall",
+      "tips": [
+       "Antebraço na parede",
+       "Roda o corpo",
+       "Abre o peito"
+      ]
+     },
+     {
+      "name": "Alongamento deltoide posterior",
+      "note": "Braço cruzado",
+      "sets": 1,
+      "reps": "45s/lado",
+      "rest": 0,
+      "search": "posterior shoulder stretch",
+      "tips": [
+       "Braço atravessa o peito",
+       "Puxa com o outro braço",
+       "Relaxa o ombro"
+      ]
+     },
+     {
+      "name": "Alongamento tríceps overhead",
+      "note": "Atrás da cabeça",
+      "sets": 1,
+      "reps": "45s/lado",
+      "rest": 0,
+      "search": "triceps stretch",
+      "tips": [
+       "Cotovelo ao tecto",
+       "Puxa o cotovelo",
+       "Sente o tríceps"
+      ]
+     },
+     {
+      "name": "Alongamento dorsal (lat)",
+      "note": "Suspenso ou TRX",
+      "sets": 1,
+      "reps": "60s",
+      "rest": 0,
+      "search": "lat stretch",
+      "tips": [
+       "Agarra a barra",
+       "Deixa o corpo pesar",
+       "Alonga as costas"
+      ]
+     },
+     {
+      "name": "Rotação torácica deitado",
+      "note": "Coluna torácica",
+      "sets": 1,
+      "reps": "60s/lado",
+      "rest": 0,
+      "search": "thoracic rotation stretch",
+      "tips": [
+       "Joelhos dobrados de lado",
+       "Braços abertos",
+       "Roda o tronco"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "stretch-4",
+  "type": "stretch",
+  "name": "Along. — Mobilidade Dinâmica",
+  "subtitle": "Pré-treino ou manhã",
+  "duration": 15,
+  "phases": [
+   {
+    "name": "Sequência Dinâmica",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Círculos de braços",
+      "note": "Aquece ombros",
+      "sets": 1,
+      "reps": "30s cada direção",
+      "rest": 0,
+      "search": "arm circles",
+      "tips": [
+       "Amplitude crescente",
+       "Ambas as direções",
+       "Controlado"
+      ]
+     },
+     {
+      "name": "Balanços de perna",
+      "note": "Anca dinâmica",
+      "sets": 1,
+      "reps": "15/lado",
+      "rest": 0,
+      "search": "leg swings",
+      "tips": [
+       "Frente-trás e lateral",
+       "Apoia-te na parede",
+       "Amplitude progressiva"
+      ]
+     },
+     {
+      "name": "Agachamento profundo com pausa",
+      "note": "Mobilidade global",
+      "sets": 1,
+      "reps": "45s",
+      "rest": 0,
+      "search": "deep squat hold",
+      "tips": [
+       "Desce e mantém",
+       "Cotovelos afastam joelhos",
+       "Costas direitas"
+      ]
+     },
+     {
+      "name": "Lunge com rotação",
+      "note": "Anca + torácica",
+      "sets": 1,
+      "reps": "8/lado",
+      "rest": 0,
+      "search": "lunge with rotation",
+      "tips": [
+       "Lunge profundo",
+       "Roda para o lado da frente",
+       "Controlado"
+      ]
+     },
+     {
+      "name": "Inchworm",
+      "note": "Cadeia posterior dinâmica",
+      "sets": 1,
+      "reps": "8",
+      "rest": 0,
+      "search": "inchworm exercise",
+      "tips": [
+       "Caminha com as mãos",
+       "Pernas estendidas",
+       "Volta a subir"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "stretch-5",
+  "type": "stretch",
+  "name": "Along. — Relaxamento & Sono",
+  "subtitle": "Noite · parasimpático",
+  "duration": 15,
+  "phases": [
+   {
+    "name": "Sequência Suave",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Respiração diafragmática",
+      "note": "Activa parasimpático",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "diaphragmatic breathing",
+      "tips": [
+       "Inspira 4s, expira 6s",
+       "Mão no abdómen",
+       "Relaxa progressivamente"
+      ]
+     },
+     {
+      "name": "Pernas na parede",
+      "note": "Drenagem e relaxamento",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "legs up the wall",
+      "tips": [
+       "Pernas verticais na parede",
+       "Lombar relaxada",
+       "Respira lentamente"
+      ]
+     },
+     {
+      "name": "Torção espinal deitado",
+      "note": "Liberta a lombar",
+      "sets": 1,
+      "reps": "90s/lado",
+      "rest": 0,
+      "search": "supine spinal twist",
+      "tips": [
+       "Joelho cruza o corpo",
+       "Ombros no chão",
+       "Respira fundo"
+      ]
+     },
+     {
+      "name": "Postura da criança",
+      "note": "Relaxamento",
+      "sets": 1,
+      "reps": "2 min",
+      "rest": 0,
+      "search": "childs pose",
+      "tips": [
+       "Anca aos calcanhares",
+       "Testa no chão",
+       "Respiração lenta"
+      ]
+     },
+     {
+      "name": "Relaxamento final (savasana)",
+      "note": "Descontração total",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "savasana relaxation",
+      "tips": [
+       "Deitado de costas",
+       "Corpo solto",
+       "Foco na respiração"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "aero-a",
+  "type": "aero",
+  "name": "Zona 2 — Spinning",
+  "subtitle": "Base aeróbica · longevidade",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Spinning — ritmo crescente",
+      "note": "Sobe até Zona 2",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "cycling warm up",
+      "tips": [
+       "Cadência 80–90 rpm",
+       "Aumenta resistência",
+       "Respiração nasal"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Zona 2",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Spinning — Zona 2 contínua",
+      "note": "60–70% FCmax (~100–118 bpm)",
+      "sets": 1,
+      "reps": "22 min",
+      "rest": 0,
+      "search": "zone 2 cardio training",
+      "tips": [
+       "Falar em frases completas",
+       "FCmax ~168 bpm (220−52)",
+       "Estímulo mitocondrial",
+       "Podes ouvir podcast"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Spinning leve + respiração",
+      "note": "Parasimpático",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "cool down breathing",
+      "tips": [
+       "Reduz gradualmente",
+       "Respiração diafragmática",
+       "Recuperação"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "aero-b",
+  "type": "aero",
+  "name": "Aeróbico Misto",
+  "subtitle": "Corda + bicicleta · variedade",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade + corda leve",
+      "note": "Aquece tornozelos",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "jump rope warm up",
+      "tips": [
+       "Saltos baixos",
+       "Aquece articulações",
+       "Coordenação"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco Contínuo Misto",
+    "dot": "blue",
+    "exercises": [
+     {
+      "name": "Corda — ritmo moderado",
+      "note": "Bloco 1",
+      "sets": 1,
+      "reps": "6 min",
+      "rest": 60,
+      "search": "jump rope cardio",
+      "tips": [
+       "Ritmo sustentável",
+       "Alterna simples/duplos",
+       "Postura erguida"
+      ]
+     },
+     {
+      "name": "Spinning — Zona 2",
+      "note": "Bloco 2",
+      "sets": 1,
+      "reps": "10 min",
+      "rest": 60,
+      "search": "zone 2 cycling",
+      "tips": [
+       "60–70% FCmax",
+       "Cadência estável",
+       "Conversa possível"
+      ]
+     },
+     {
+      "name": "Corda — ritmo moderado",
+      "note": "Bloco 3",
+      "sets": 1,
+      "reps": "6 min",
+      "rest": 0,
+      "search": "jump rope intervals",
+      "tips": [
+       "Mantém cadência",
+       "Aterragem suave",
+       "Termina forte"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-1",
+  "type": "hiit",
+  "name": "HIIT Spinning 30/90",
+  "subtitle": "VO₂max · pico de GH",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Spinning — Zona 2",
+      "note": "55–65% FCmax",
+      "sets": 1,
+      "reps": "8 min",
+      "rest": 0,
+      "search": "hiit warm up cycling",
+      "tips": [
+       "Conversa possível",
+       "Cadência 80–90",
+       "Prepara CV"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco HIIT",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Sprints 30/90",
+      "note": "8 rondas · 30s máx / 90s leve",
+      "sets": 8,
+      "reps": "30s",
+      "rest": 90,
+      "search": "hiit cycling sprints",
+      "tips": [
+       "90–95% FCmax",
+       "Resistência alta",
+       "Pedala leve nos 90s",
+       "Pico de GH"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Retorno + respiração",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "4 min",
+      "rest": 0,
+      "search": "cool down cycling",
+      "tips": [
+       "Reduz gradual",
+       "Respiração controlada",
+       "Baixa a FC"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-2",
+  "type": "hiit",
+  "name": "HIIT Corpo Tabata",
+  "subtitle": "Peso corporal · metabólico",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Tabata 1 (20/10 ×8)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpees",
+      "note": "20s / 10s × 8",
+      "sets": 8,
+      "reps": "20s",
+      "rest": 10,
+      "search": "burpee tabata",
+      "tips": [
+       "Máxima intensidade",
+       "Peito ao chão",
+       "Salto explosivo"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Tabata 2 (20/10 ×8)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "TRX Squat Jump",
+      "note": "20s / 10s × 8",
+      "sets": 8,
+      "reps": "20s",
+      "rest": 10,
+      "search": "squat jump exercise",
+      "tips": [
+       "Explosivo",
+       "Aterragem suave",
+       "TRX p/ profundidade"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Tabata 3 (20/10 ×8)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Mountain Climbers",
+      "note": "20s / 10s × 8",
+      "sets": 8,
+      "reps": "20s",
+      "rest": 10,
+      "search": "mountain climbers",
+      "tips": [
+       "Ritmo rápido",
+       "Anca estável",
+       "Core activo"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-3",
+  "type": "hiit",
+  "name": "HIIT Circuito Força",
+  "subtitle": "Força-resistência intensa",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Activação geral + corda",
+      "note": "Prepara o corpo",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "full body activation",
+      "tips": [
+       "Aquece progressivo",
+       "Ombros e ancas",
+       "Eleva temperatura"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Circuito (4 rondas · 40/20)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "TRX Row",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "trx row",
+      "tips": [
+       "Mantém cadência",
+       "Escápulas activas",
+       "Corpo em linha"
+      ]
+     },
+     {
+      "name": "Goblet Squat",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "goblet squat",
+      "tips": [
+       "Halter ao peito",
+       "Profundidade total",
+       "Costas direitas"
+      ]
+     },
+     {
+      "name": "Press Halteres em pé",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "standing dumbbell press",
+      "tips": [
+       "Core activo",
+       "Não arquear",
+       "Amplitude completa"
+      ]
+     },
+     {
+      "name": "Corda / Mountain Climbers",
+      "note": "40s / 60s fim ronda",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 60,
+      "search": "jump rope hiit",
+      "tips": [
+       "Máxima intensidade",
+       "60s no fim da ronda",
+       "Hidrata"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-4",
+  "type": "hiit",
+  "name": "HIIT EMOM 20",
+  "subtitle": "A cada minuto · 20 min",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "EMOM (20 min)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Min ímpar: Burpees",
+      "note": "12 reps no minuto · descansa o resto",
+      "sets": 10,
+      "reps": "12",
+      "rest": 0,
+      "search": "burpee emom",
+      "tips": [
+       "Completa as reps",
+       "Descansa o tempo restante",
+       "Ritmo sustentável"
+      ]
+     },
+     {
+      "name": "Min par: Goblet Squat",
+      "note": "15 reps no minuto · descansa o resto",
+      "sets": 10,
+      "reps": "15",
+      "rest": 0,
+      "search": "goblet squat emom",
+      "tips": [
+       "Completa as reps",
+       "Recupera no resto do minuto",
+       "Técnica firme"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-5",
+  "type": "hiit",
+  "name": "HIIT Corda Intervalos",
+  "subtitle": "Salto · explosivo",
+  "duration": 25,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Corda leve + mobilidade",
+      "note": "Aquece tornozelos",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "jump rope warm up",
+      "tips": [
+       "Saltos baixos",
+       "Aquece articulações",
+       "Coordenação"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Intervalos (10 rondas)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Corda — Sprint",
+      "note": "40s rápido / 20s pausa × 10",
+      "sets": 10,
+      "reps": "40s",
+      "rest": 20,
+      "search": "jump rope hiit intervals",
+      "tips": [
+       "Duplos se possível",
+       "Máxima velocidade",
+       "Aterragem suave"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Mobilidade tornozelos",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "ankle mobility",
+      "tips": [
+       "Movimento suave",
+       "Relaxa as pernas",
+       "Respira"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-6",
+  "type": "hiit",
+  "name": "HIIT Bicicleta Pirâmide",
+  "subtitle": "Intervalos crescentes",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Spinning — Zona 2",
+      "note": "55–65% FCmax",
+      "sets": 1,
+      "reps": "6 min",
+      "rest": 0,
+      "search": "hiit warm up cycling",
+      "tips": [
+       "Conversa possível",
+       "Cadência 80–90 rpm",
+       "Prepara o sistema CV"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Pirâmide",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Sprints crescentes/decrescentes",
+      "note": "15s-30s-45s-60s-45s-30s-15s (rec. igual)",
+      "sets": 7,
+      "reps": "ver nota",
+      "rest": 0,
+      "search": "cycling pyramid intervals",
+      "tips": [
+       "Sobe e desce a duração",
+       "Recuperação = tempo de esforço",
+       "Esforço máximo em cada sprint"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Retorno + respiração",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "4 min",
+      "rest": 0,
+      "search": "cool down cycling",
+      "tips": [
+       "Reduz gradual",
+       "Respiração controlada",
+       "Baixa a FC"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-7",
+  "type": "hiit",
+  "name": "HIIT Full Body 45/15",
+  "subtitle": "Circuito metabólico",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Circuito (3 rondas · 45/15)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpees",
+      "note": "45s / 15s",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "burpee",
+      "tips": [
+       "Máxima intensidade",
+       "Peito ao chão",
+       "Ritmo constante"
+      ]
+     },
+     {
+      "name": "TRX Row",
+      "note": "45s / 15s",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "trx row",
+      "tips": [
+       "Cadência firme",
+       "Escápulas activas",
+       "Corpo em linha"
+      ]
+     },
+     {
+      "name": "Squat Jump",
+      "note": "45s / 15s",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "squat jump",
+      "tips": [
+       "Explosivo",
+       "Aterragem suave",
+       "Profundidade"
+      ]
+     },
+     {
+      "name": "Mountain Climbers",
+      "note": "45s / 60s fim ronda",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 60,
+      "search": "mountain climbers",
+      "tips": [
+       "Ritmo rápido",
+       "Anca estável",
+       "Recupera no fim"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-8",
+  "type": "hiit",
+  "name": "HIIT Spinning 40/20",
+  "subtitle": "Resistência anaeróbica",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Spinning — Zona 2",
+      "note": "55–65% FCmax",
+      "sets": 1,
+      "reps": "6 min",
+      "rest": 0,
+      "search": "hiit warm up cycling",
+      "tips": [
+       "Conversa possível",
+       "Cadência 80–90 rpm",
+       "Prepara o sistema CV"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Bloco HIIT (10 rondas)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Sprints 40/20",
+      "note": "40s forte / 20s leve × 10",
+      "sets": 10,
+      "reps": "40s",
+      "rest": 20,
+      "search": "cycling 40 20 intervals",
+      "tips": [
+       "85–90% FCmax",
+       "Resistência média-alta",
+       "Não pares nos 20s"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Retorno + respiração",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "4 min",
+      "rest": 0,
+      "search": "cool down cycling",
+      "tips": [
+       "Reduz gradual",
+       "Respiração controlada",
+       "Baixa a FC"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-9",
+  "type": "hiit",
+  "name": "HIIT Escada (Ladder)",
+  "subtitle": "Reps crescentes",
+  "duration": 25,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Ladder 1→10",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpee + Squat Jump",
+      "note": "1 de cada, depois 2, 3... até 10",
+      "sets": 1,
+      "reps": "1→10",
+      "rest": 0,
+      "search": "burpee ladder workout",
+      "tips": [
+       "Sobe 1 rep por ronda",
+       "Sem descanso fixo — só o necessário",
+       "Desafio mental e físico"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Caminhada + respiração",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "cool down walk",
+      "tips": [
+       "Baixa a FC",
+       "Respira fundo",
+       "Relaxa"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-10",
+  "type": "hiit",
+  "name": "HIIT TRX Metabólico",
+  "subtitle": "Suspensão · intenso",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Activação TRX + mobilidade",
+      "note": "Prepara o corpo",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "trx warm up",
+      "tips": [
+       "Movimento controlado",
+       "Aquece ombros",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Circuito TRX (4 rondas · 40/20)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "TRX Squat Jump",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "trx squat jump",
+      "tips": [
+       "Explosivo",
+       "TRX de apoio",
+       "Aterragem suave"
+      ]
+     },
+     {
+      "name": "TRX Row",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "trx row",
+      "tips": [
+       "Cadência firme",
+       "Corpo em linha",
+       "Escápulas"
+      ]
+     },
+     {
+      "name": "TRX Push-up",
+      "note": "40s / 20s",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 20,
+      "search": "trx push up",
+      "tips": [
+       "Corpo em linha",
+       "Cotovelos 45°",
+       "Core firme"
+      ]
+     },
+     {
+      "name": "TRX Mountain Climber",
+      "note": "40s / 60s fim",
+      "sets": 4,
+      "reps": "40s",
+      "rest": 60,
+      "search": "trx mountain climber",
+      "tips": [
+       "Ritmo rápido",
+       "Anca estável",
+       "Recupera no fim"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-11",
+  "type": "hiit",
+  "name": "HIIT Cardio + Core",
+  "subtitle": "Alterna intenso/core",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Alternado (4 rondas)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpees",
+      "note": "45s intenso",
+      "sets": 4,
+      "reps": "45s",
+      "rest": 15,
+      "search": "burpee",
+      "tips": [
+       "Máxima intensidade",
+       "Peito ao chão",
+       "Explosivo"
+      ]
+     },
+     {
+      "name": "Prancha",
+      "note": "45s core · estável",
+      "sets": 4,
+      "reps": "45s",
+      "rest": 15,
+      "search": "front plank",
+      "tips": [
+       "Corpo em linha",
+       "Anca firme",
+       "Respira"
+      ]
+     },
+     {
+      "name": "Mountain Climbers",
+      "note": "45s intenso",
+      "sets": 4,
+      "reps": "45s",
+      "rest": 15,
+      "search": "mountain climbers",
+      "tips": [
+       "Ritmo rápido",
+       "Core activo",
+       "Anca estável"
+      ]
+     },
+     {
+      "name": "Hollow Hold",
+      "note": "45s core · 60s fim ronda",
+      "sets": 4,
+      "reps": "45s",
+      "rest": 60,
+      "search": "hollow body hold",
+      "tips": [
+       "Lombar no chão",
+       "Tensão constante",
+       "Recupera no fim"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-12",
+  "type": "hiit",
+  "name": "HIIT Sprint Bicicleta 15/45",
+  "subtitle": "Potência máxima",
+  "duration": 25,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Spinning — Zona 2",
+      "note": "55–65% FCmax",
+      "sets": 1,
+      "reps": "6 min",
+      "rest": 0,
+      "search": "hiit warm up cycling",
+      "tips": [
+       "Conversa possível",
+       "Cadência 80–90 rpm",
+       "Prepara o sistema CV"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Sprints Curtos (10 rondas)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "All-out 15/45",
+      "note": "15s máximo absoluto / 45s recuperação × 10",
+      "sets": 10,
+      "reps": "15s",
+      "rest": 45,
+      "search": "cycling sprint intervals",
+      "tips": [
+       "100% esforço nos 15s",
+       "Resistência muito alta",
+       "Recuperação completa nos 45s",
+       "Desenvolve potência"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Retorno",
+    "dot": "purple",
+    "exercises": [
+     {
+      "name": "Retorno + respiração",
+      "note": "Recuperação",
+      "sets": 1,
+      "reps": "4 min",
+      "rest": 0,
+      "search": "cool down cycling",
+      "tips": [
+       "Reduz gradual",
+       "Respiração controlada",
+       "Baixa a FC"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-13",
+  "type": "hiit",
+  "name": "HIIT Híbrido Corpo+Bici",
+  "subtitle": "Alterna estações",
+  "duration": 30,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade dinâmica",
+      "note": "Corpo inteiro",
+      "sets": 1,
+      "reps": "5 min",
+      "rest": 0,
+      "search": "dynamic warm up",
+      "tips": [
+       "Aquece articulações",
+       "Eleva FC",
+       "Activa o core"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "3 Rondas Híbridas",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Spinning Sprint",
+      "note": "45s forte na bicicleta",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "cycling sprint",
+      "tips": [
+       "Resistência alta",
+       "Cadência elevada",
+       "Esforço máximo"
+      ]
+     },
+     {
+      "name": "Burpees",
+      "note": "45s peso corporal",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "burpee",
+      "tips": [
+       "Intenso",
+       "Peito ao chão",
+       "Salto explosivo"
+      ]
+     },
+     {
+      "name": "Spinning Sprint",
+      "note": "45s forte na bicicleta",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 15,
+      "search": "cycling sprint",
+      "tips": [
+       "Mantém intensidade",
+       "Resistência alta",
+       "Não desistas"
+      ]
+     },
+     {
+      "name": "Mountain Climbers",
+      "note": "45s · 90s fim ronda",
+      "sets": 3,
+      "reps": "45s",
+      "rest": 90,
+      "search": "mountain climbers",
+      "tips": [
+       "Ritmo rápido",
+       "Core activo",
+       "Recupera 90s no fim"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hiit-14",
+  "type": "hiit",
+  "name": "HIIT Curto Intenso",
+  "subtitle": "15 min · sem desculpas",
+  "duration": 15,
+  "phases": [
+   {
+    "name": "Aquecimento",
+    "dot": "",
+    "exercises": [
+     {
+      "name": "Mobilidade rápida",
+      "note": "Aquece o essencial",
+      "sets": 1,
+      "reps": "3 min",
+      "rest": 0,
+      "search": "quick warm up",
+      "tips": [
+       "Movimento dinâmico",
+       "Eleva FC",
+       "Prepara articulações"
+      ]
+     }
+    ]
+   },
+   {
+    "name": "Tabata Duplo (20/10)",
+    "dot": "red",
+    "exercises": [
+     {
+      "name": "Burpees",
+      "note": "Tabata 1 · 20s/10s × 8",
+      "sets": 8,
+      "reps": "20s",
+      "rest": 10,
+      "search": "burpee tabata",
+      "tips": [
+       "Máxima intensidade",
+       "Peito ao chão",
+       "Explosivo"
+      ]
+     },
+     {
+      "name": "Squat Jump",
+      "note": "Tabata 2 · 20s/10s × 8",
+      "sets": 8,
+      "reps": "20s",
+      "rest": 10,
+      "search": "squat jump tabata",
+      "tips": [
+       "Explosivo",
+       "Aterragem suave",
+       "Sem parar"
+      ]
+     }
+    ]
+   }
+  ]
+ }
 ];
+
+
+const TYPES = {
+  full:    { name:"Corpo Inteiro", short:"Corpo", color:"#d4f000", icon:"💪" },
+  upper:   { name:"Força — Upper", short:"Upper", color:"#00d4f0", icon:"🅰️" },
+  lower:   { name:"Força — Lower", short:"Lower", color:"#f0a040", icon:"🦵" },
+  core:    { name:"Força — Core", short:"Core", color:"#9060f0", icon:"🎯" },
+  stretch: { name:"Alongamentos", short:"Along.", color:"#40e090", icon:"🧘" },
+  aero:    { name:"Aeróbico", short:"Aeróbico", color:"#f060c0", icon:"🚴" },
+  hiit:    { name:"HIIT", short:"HIIT", color:"#f04060", icon:"🔥" }
+};
+const TYPE_ORDER = ['full','upper','lower','core','stretch','aero','hiit'];
 
 let currentWorkoutId = null;
 let completedExercises = {};
 let timerInterval = null;
 let timerTotal = 0;
+let activeFilter = 'all';
 
 function getWorkout(id) { return PLAN.find(w => w.id === id); }
 
 function saveLog(id, data) {
   const logs = JSON.parse(localStorage.getItem('treino_logs') || '[]');
   logs.unshift({ workoutId: id, date: new Date().toISOString(), data });
-  localStorage.setItem('treino_logs', JSON.stringify(logs.slice(0, 100)));
+  localStorage.setItem('treino_logs', JSON.stringify(logs.slice(0, 200)));
 }
 function getLogs() { return JSON.parse(localStorage.getItem('treino_logs') || '[]'); }
 function getWeekLogs() {
@@ -471,43 +3445,38 @@ function switchTab(tab) {
 function goHome() { switchTab('home'); }
 function openWorkout(id) { currentWorkoutId = id; switchTab('treino'); }
 
-function renderHome() {
-  const now = new Date();
-  const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  document.getElementById('hero-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  const h = now.getHours();
-  const greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
-  document.getElementById('hero-greeting').innerHTML = `${greet},<br><span>Miguel!</span>`;
+function setFilter(f) { activeFilter = f; renderFilters(); renderWorkouts(); }
 
-  const logs = getLogs();
-  const weekLogs = getWeekLogs();
-  document.getElementById('stat-week').textContent = weekLogs.length;
-  document.getElementById('stat-total').textContent = logs.length;
+function renderFilters() {
+  const row = document.getElementById('filter-row');
+  row.innerHTML = '';
+  const filters = [['all','Todos']].concat(TYPE_ORDER.map(t => [t, TYPES[t].short]));
+  filters.forEach(([key,label]) => {
+    const chip = document.createElement('div');
+    chip.className = 'filter-chip' + (activeFilter === key ? ' active' : '');
+    chip.textContent = label;
+    chip.onclick = () => setFilter(key);
+    row.appendChild(chip);
+  });
+}
 
-  let streak = 0;
-  const today = new Date(); today.setHours(0,0,0,0);
-  for (let i = 0; i < 30; i++) {
-    const d = new Date(today); d.setDate(d.getDate() - i);
-    const found = logs.some(l => { const ld = new Date(l.date); ld.setHours(0,0,0,0); return ld.getTime() === d.getTime(); });
-    if (found) streak++; else break;
-  }
-  document.getElementById('stat-streak').textContent = streak;
-
+function renderWorkouts() {
   const container = document.getElementById('workouts-container');
   container.innerHTML = '';
-  const weekWorkoutIds = weekLogs.map(l => l.workoutId);
+  const weekWorkoutIds = getWeekLogs().map(l => l.workoutId);
+  const typesToShow = activeFilter === 'all' ? TYPE_ORDER : [activeFilter];
 
-  ['full','aero','hiit'].forEach(type => {
+  typesToShow.forEach(type => {
     const typeInfo = TYPES[type];
     const workouts = PLAN.filter(w => w.type === type);
+    if (workouts.length === 0) return;
     const section = document.createElement('div');
     section.className = 'type-section';
     section.innerHTML = `
       <div class="type-header">
         <div class="type-dot" style="background:${typeInfo.color}"></div>
-        <div class="type-name" style="color:${typeInfo.color}">${typeInfo.name}</div>
-        <div class="type-count">${workouts.length} treinos</div>
+        <div class="type-name" style="color:${typeInfo.color}">${typeInfo.icon} ${typeInfo.name}</div>
+        <div class="type-count">${workouts.length}</div>
       </div>`;
     workouts.forEach(w => {
       const exCount = w.phases.reduce((a,p) => a + p.exercises.length, 0);
@@ -532,11 +3501,37 @@ function renderHome() {
     });
     container.appendChild(section);
   });
+}
+
+function renderHome() {
+  const now = new Date();
+  const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('hero-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const h = now.getHours();
+  const greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  document.getElementById('hero-greeting').innerHTML = `${greet},<br><span>Miguel!</span>`;
+
+  const logs = getLogs();
+  const weekLogs = getWeekLogs();
+  document.getElementById('stat-week').textContent = weekLogs.length;
+  document.getElementById('stat-total').textContent = logs.length;
+
+  let streak = 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < 60; i++) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const found = logs.some(l => { const ld = new Date(l.date); ld.setHours(0,0,0,0); return ld.getTime() === d.getTime(); });
+    if (found) streak++; else if (i > 0) break;
+  }
+  document.getElementById('stat-streak').textContent = streak;
+
+  renderFilters();
+  renderWorkouts();
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.navigator.standalone;
-  if (isIOS && !isStandalone) document.getElementById('install-banner').classList.add('show');
-  document.getElementById('topbar-week').textContent = `${weekLogs.length} treinos esta semana`;
+  if (isIOS && !window.navigator.standalone) document.getElementById('install-banner').classList.add('show');
+  document.getElementById('topbar-week').textContent = `${weekLogs.length} treinos esta semana · ${PLAN.length} disponíveis`;
 }
 
 function renderTreino(id) {
@@ -544,7 +3539,7 @@ function renderTreino(id) {
   if (!w) return;
   completedExercises = getCompleted();
   const typeInfo = TYPES[w.type];
-  document.getElementById('treino-topbar-title').textContent = typeInfo.name;
+  document.getElementById('treino-topbar-title').textContent = typeInfo.short;
 
   const header = document.getElementById('day-header-bar');
   header.innerHTML = `
@@ -556,6 +3551,7 @@ function renderTreino(id) {
   const content = document.getElementById('treino-content');
   content.innerHTML = '';
   let totalEx = 0, completedCount = 0;
+  const logSets = (w.type === 'full' || w.type === 'upper' || w.type === 'lower');
 
   w.phases.forEach((phase, pi) => {
     const ph = document.createElement('div');
@@ -574,7 +3570,7 @@ function renderTreino(id) {
       card.id = `ex-${pi}-${ei}`;
 
       let setsHtml = '';
-      if (ex.sets > 1 && w.type === 'full') {
+      if (ex.sets > 1 && logSets) {
         for (let s = 0; s < ex.sets; s++) {
           const saved = (completedExercises[`${key}-set${s}`] || '');
           setsHtml += `
